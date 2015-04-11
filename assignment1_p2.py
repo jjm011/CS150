@@ -3,7 +3,7 @@ def BFS(board):
     Q = [] 
     numCol = len(board[0])
     numRow = len(board)
-    solution = []
+    visit =  [[bool for i in range(len(board[0]))] for j in range (len(board))]
     myBoard = [[int for i in range(len(board[0]))] for j in range (len(board))]
     # find the empty tile position and create myBoard arrays
     for index,line in enumerate(board):
@@ -14,6 +14,7 @@ def BFS(board):
                 Q.append( (index,index2,'') )
 
             myBoard[index][index2] = board[index][index2]
+            visit[index][index2] = False
 
     current = Q.pop(0)
     if (current[0] - 1) >= 0:
@@ -35,7 +36,7 @@ def BFS(board):
     print Q
     while(Q):
         current = Q.pop(0)
-        
+        current[3] = True
 
         break
 
