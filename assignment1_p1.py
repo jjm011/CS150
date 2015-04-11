@@ -14,7 +14,7 @@ def main():
     import sys
     board=[[int(n.strip()) for n in line.split(',')] for line in sys.stdin.readlines()]
     print(is_complete(board))
-    #print board
+    
 
 if __name__ == '__main__':
     main()
