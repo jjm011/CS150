@@ -29,6 +29,7 @@ class Board(object):
 		return self.solved
 		
 def BFS(board):
+    if(is_complete(board)): return "Solved"
     Q = [] 
     numCol = len(board[0])
     numRow = len(board)
@@ -42,7 +43,7 @@ def BFS(board):
         for index2,num in enumerate(line):
            
             if board[index][index2] == 0:
-				initial  = Board(copy.deepcopy(board), index, index2, copy.deepcopy(solution))
+				initial = Board(copy.deepcopy(board), index, index2, copy.deepcopy(solution))
 				Q.append(initial)
 
             #myBoard[index][index2] = board[index][index2]
@@ -74,19 +75,19 @@ def BFS(board):
       #  current[3] = True
 
       #  break
-    print (Search(Q, visit))
+    return Search(Q, visit)
 	
 def Search(Q, visit):
     
 	while (Q):
 		current = Q.pop(0)
-		if visit[current.getCol()][current.getRow()]:
-			print "Visited."
+		if visit[current.getRow()][current.getCol()]:
+			#print "Visited."
 			continue
 		else:
 			#print "X", current.getRow()
 			#print "Y", current.getCol()
-			visit[current.getCol()][current.getRow()] = True
+			visit[current.getRow()][current.getCol()] = True
 			newb = Swap(current, 1)
 			if(newb != current):
 				#print "BOARD",newb.getBoard()
@@ -119,6 +120,7 @@ def Search(Q, visit):
 					return newb.getMove()
 				else:
 					Q.append(newb)
+	return "Unsolvable"
 
 def Swap(myBoard, direction):
 	board = [row[:] for row in myBoard.getBoard()]
@@ -126,47 +128,47 @@ def Swap(myBoard, direction):
 	#print "NEWBOARD",board
 	if(direction == 1):
 		row = myBoard.getRow()-1
-		print "ROW",row
+		#print "ROW",row
 		col= myBoard.getCol()
-		print "COL",col
+		#print "COL",col
 	if(direction == 2):
 		row = myBoard.getRow()+1
-		print "ROW",row
+		#print "ROW",row
 		col = myBoard.getCol()
-		print "COL",col
+		#print "COL",col
 	if(direction == 3):
 		row = myBoard.getRow()
-		print "ROW",row
+		#print "ROW",row
 		col = myBoard.getCol()-1
-		print "COL",col
+		#print "COL",col
 	if(direction == 4):
 		row = myBoard.getRow()
-		print "ROW",row
+		#print "ROW",row
 		col= myBoard.getCol()+1
-		print "COL",col
+		#print "COL",col
       
 	newState = (row,col)
 	#print newState
 	#print board
 	if Movable(newState, len(board[0]), len(board)):
-		print "LENBOARD0",len(board[0])
-		print "LENBOARD",len(board)
+		#print "LENBOARD0",len(board[0])
+		#print "LENBOARD",len(board)
 		#print x
 		#print y
 		temp = board[row][col]
 		board[row][col] = myBoard.getBoard()[myBoard.getRow()][myBoard.getCol()]
 		board[myBoard.getRow()][myBoard.getCol()] = temp
 		if(direction == 1):
-			print "U"
+			#print "U"
 			newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("U"))
 		elif(direction == 2):
-			print "D"
+			#print "D"
 			newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("D"))
 		elif(direction == 3):
-			print "L"
+			#print "L"
 			newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("L"))
 		elif(direction == 4):
-			print "R"
+			#print "R"
 			newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("R"))
 		#print direction
 		#print newb.getMove()
@@ -195,7 +197,7 @@ def is_complete(board):
 def main():
     import sys
     board=[[int(n.strip()) for n in line.split(',')] for line in sys.stdin.readlines()]
-    BFS(board)
+    print (BFS(board))
     #print(is_complete(board))
     #print board
 
