@@ -15,6 +15,13 @@ class Board(object):
 	def __eq__(self, next):
 		return self.board == next
 		
+	def __repr__(self):
+		strs = ""
+		for j in range(len(self.board)):
+			for i in range(len(self.board[0])):
+				strs += str(self.board[j][i])
+		return strs
+		
 	def getBoard(self):
 		return self.board
 	def getCol(self):
@@ -35,7 +42,7 @@ def BFS(board):
     numRow = len(board)
     #myBoard = [[int for i in range(len(board[0]))] for j in range (len(board))]
     #print "FIRST",myBoard
-    visit =  [[bool for i in range(len(board[0]))] for j in range (len(board))]
+    visit =  {}
     solution = ""
 
     # find the empty tile position and create myBoard arrays
@@ -50,8 +57,6 @@ def BFS(board):
             #print "FIRST",index
             #print "SECOND",index2
             #print ""
-            visit[index][index2] = False
-
     #current = Q.pop(0)
     #if (current[0] - 1) >= 0:
      # Q.append((current[0]-1, current[1], 'U') )
@@ -81,13 +86,13 @@ def Search(Q, visit):
     
 	while (Q):
 		current = Q.pop(0)
-		if visit[current.getRow()][current.getCol()]:
+		if current.__repr__() in visit:
 			#print "Visited."
 			continue
 		else:
 			#print "X", current.getRow()
 			#print "Y", current.getCol()
-			visit[current.getRow()][current.getCol()] = True
+			visit[current.__repr__()] = 1
 			newb = Swap(current, 1)
 			if(newb != current):
 				#print "BOARD",newb.getBoard()
