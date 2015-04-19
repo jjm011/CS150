@@ -1,4 +1,6 @@
 __author__ = 'jjm011@ucsd.edu,a5velasc@ucsd.edu'
+
+
 def BFS(board):
     Q = [] 
     numCol = len(board[0])
@@ -49,7 +51,7 @@ def Search(Q, myBoard):
         current = Q.pop(0)
      
         Swap(current, 1, myBoard)
-        print myBoard
+        
         break
 
 def Swap(node, direction, myBoard):
