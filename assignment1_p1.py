@@ -1,11 +1,14 @@
 __author__ = 'jjm011@ucsd.edu,a5velasc@ucsd.edu'
+
+#checks whether the board has been solved
 def is_complete(board):
-    # your code here
+    
     incr = 0
+    #double for loop that checks each cell
     for line in board:
         for num in line:
-            print num
             if num != incr:
+            #if one cell is out of order return false
                 return False
             else: incr += 1
     return True
