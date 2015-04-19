@@ -3,208 +3,162 @@ __author__ = 'jjm011@ucsd.edu,a5velasc@ucsd.edu'
 import copy
 
 class Board(object):
-	def __init__(self, board, row, col, move):
-		self.board = board
-		self.col = col
-		self.row = row
-		self.move = move
-		self.solved = False
-		#for j in range(len(board)):
-		#	for i in range(len(board[0])):
-		#		self.board[i][j] = board[i][j]
-	def __eq__(self, next):
-		return self.board == next
-		
-	def __repr__(self):
-		strs = ""
-		for j in range(len(self.board)):
-			for i in range(len(self.board[0])):
-				strs += str(self.board[j][i])
-		return strs
-		
-	def getBoard(self):
-		return self.board
-	def getCol(self):
-		return self.col;
-	def getRow(self):
-		return self.row;
-	def getMove(self):
-		return self.move;
-	def setSolved(self):
-		self.solved = True
-	def isSolved(self):
-		return self.solved
-		
+  def __init__(self, board, row, col, move):
+    self.board = board
+    self.col = col
+    self.row = row
+    self.move = move
+
+  def __eq__(self, other):
+    return self.board == other.board
+
+  def __hash__(self):
+    return hash(str(self.board))
+
+  def getBoard(self):
+    return self.board
+  def getCol(self):
+    return self.col;
+  def getRow(self):
+    return self.row;
+  def getMove(self):
+    return self.move;
+
+#initialize the search by finding the initial zeor tile pisition
 def BFS(board):
     if(is_complete(board)): return "Solved"
     Q = [] 
     numCol = len(board[0])
     numRow = len(board)
-    #myBoard = [[int for i in range(len(board[0]))] for j in range (len(board))]
-    #print "FIRST",myBoard
-    visit =  {}
+
+    #visit =  [[bool for i in range(len(board[0]))] for j in range (len(board))]
+    visit = set()
     solution = ""
 
-    # find the empty tile position and create myBoard arrays
+    # find the empty tile position and create visited array
     for index,line in enumerate(board):
         for index2,num in enumerate(line):
-           
+
             if board[index][index2] == 0:
-				initial = Board(copy.deepcopy(board), index, index2, copy.deepcopy(solution))
-				Q.append(initial)
 
-            #myBoard[index][index2] = board[index][index2]
-            #print "FIRST",index
-            #print "SECOND",index2
-            #print ""
-    #current = Q.pop(0)
-    #if (current[0] - 1) >= 0:
-     # Q.append((current[0]-1, current[1], 'U') )
-     # solution.append('U')
+              initial = Board(copy.deepcopy(board), index, index2, copy.deepcopy(solution))
+    Q.append(initial)
 
-    #if (current[1] - 1) >= 0:
-     # Q.append((current[0], current[1] - 1,'L'))
-      #solution.append('L')
-
-    #if (current[1] + 1) < numCol:
-     # Q.append((current[0], current[1] + 1, 'R'))
-     # solution.append('R')
-
-    #if (current[0] + 1) < numRow:
-     # Q.append((current[0] + 1, current[1], 'D'))
-     # solution.append('D')
-
-    #print Q
-    #while(Q):
-     #   current = Q.pop(0)
-      #  current[3] = True
-
-      #  break
+            #visit[index][index2] = False
+    #call the search
     return Search(Q, visit)
-	
+
+#Uses BFS to search the board with UP, DOWN, LEFT, RIGHT direction
+#Directions 1=UP, 2=DOWN, 3=LEFT, 4=RIGHT
 def Search(Q, visit):
-    
-	while (Q):
-		current = Q.pop(0)
-		if current.__repr__() in visit:
-			#print "Visited."
-			continue
-		else:
-			#print "X", current.getRow()
-			#print "Y", current.getCol()
-			visit[current.__repr__()] = 1
-			newb = Swap(current, 1)
-			if(newb != current):
-				#print "BOARD",newb.getBoard()
-				if(is_complete(newb.getBoard())):
-					current.setSolved()
-					return newb.getMove()
-				else:
-					Q.append(newb)
-			newb = Swap(current, 2)
-			if(newb != current):
-				#print "BOARD",newb.getBoard()
-				if(is_complete(newb.getBoard())):
-					current.setSolved()
-					return newb.getMove()
-				else:
-					Q.append(newb)
-			newb = Swap(current, 3)
-			if(newb != current):
-				#print "BOARD",newb.getBoard()
-				if(is_complete(newb.getBoard())):
-					current.setSolved()
-					return newb.getMove()
-				else:
-					Q.append(newb)
-			newb = Swap(current, 4)
-			if(newb != current):
-				#print "BOARD",newb.getBoard()
-				if(is_complete(newb.getBoard())):
-					current.setSolved()
-					return newb.getMove()
-				else:
-					Q.append(newb)
-	return "Unsolvable"
+  #if the Queue is not empty keep searching
+  while (Q):
+    current = Q.pop(0)
+    #make sure the node is not in visited sit
+    if current in visit:
+      continue
+		#if visit[current.getRow()][current.getCol()]:
+			#continue #visited before so skip
 
+    else:
+      #visit[current.getRow()][current.getCol()] = True
+      visit.add(current)
+      #create a new state of the board with UP move
+      newb = Swap(current, 1)
+
+      if(is_complete(newb.getBoard())):
+        return newb.getMove()
+      else:
+        Q.append(newb)
+
+      #create a new state of the board with DOWN move
+      newb = Swap(current, 2)
+      if(is_complete(newb.getBoard())):
+        return newb.getMove()
+      else:
+        Q.append(newb)
+
+      #create a new state of the board with LEFT move
+      newb = Swap(current, 3)
+
+      if(is_complete(newb.getBoard())):
+        return newb.getMove()
+      else:
+        Q.append(newb)
+
+      #create a new state of the board with RIGHT move
+      newb = Swap(current, 4)
+      if(is_complete(newb.getBoard())):
+        return newb.getMove()
+      else:
+        Q.append(newb)
+  #All moves are made so unsolvable
+  return "UNSOLVABLE"
+
+#computes the swap with according direction
 def Swap(myBoard, direction):
-	board = [row[:] for row in myBoard.getBoard()]
-	#print "MYBOARD",myBoard.getBoard()
-	#print "NEWBOARD",board
-	if(direction == 1):
-		row = myBoard.getRow()-1
-		#print "ROW",row
-		col= myBoard.getCol()
-		#print "COL",col
-	if(direction == 2):
-		row = myBoard.getRow()+1
-		#print "ROW",row
-		col = myBoard.getCol()
-		#print "COL",col
-	if(direction == 3):
-		row = myBoard.getRow()
-		#print "ROW",row
-		col = myBoard.getCol()-1
-		#print "COL",col
-	if(direction == 4):
-		row = myBoard.getRow()
-		#print "ROW",row
-		col= myBoard.getCol()+1
-		#print "COL",col
-      
-	newState = (row,col)
-	#print newState
-	#print board
-	if Movable(newState, len(board[0]), len(board)):
-		#print "LENBOARD0",len(board[0])
-		#print "LENBOARD",len(board)
-		#print x
-		#print y
-		temp = board[row][col]
-		board[row][col] = myBoard.getBoard()[myBoard.getRow()][myBoard.getCol()]
-		board[myBoard.getRow()][myBoard.getCol()] = temp
-		if(direction == 1):
-			#print "U"
-			newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("U"))
-		elif(direction == 2):
-			#print "D"
-			newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("D"))
-		elif(direction == 3):
-			#print "L"
-			newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("L"))
-		elif(direction == 4):
-			#print "R"
-			newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("R"))
-		#print direction
-		#print newb.getMove()
-		return newb
-	return myBoard
+  board = [row[:] for row in myBoard.getBoard()]
 
+  if(direction == 1):
+    row = myBoard.getRow()-1
+    col= myBoard.getCol()
+
+  if(direction == 2):
+    row = myBoard.getRow()+1
+    col = myBoard.getCol()
+
+  if(direction == 3):
+    row = myBoard.getRow()
+    col = myBoard.getCol()-1
+		
+  if(direction == 4):
+		row = myBoard.getRow()
+		col= myBoard.getCol()+1
+      
+  newState = (row,col)
+  
+  if Movable(newState, len(board[0]), len(board)):
+    temp = board[row][col]
+    board[row][col] = myBoard.getBoard()[myBoard.getRow()][myBoard.getCol()]
+    board[myBoard.getRow()][myBoard.getCol()] = temp
+    if(direction == 1):
+      newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("U"))
+      
+    elif(direction == 2):
+      newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("D"))
+      
+    elif(direction == 3):
+      newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("L"))
+      
+    elif(direction == 4):
+      newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("R"))
+      
+    return newb
+
+  return myBoard
+
+#checks the next move is allowed or not
 def Movable(direction,numCol,numRow):
 	if (direction[1] >= numCol or direction[1] < 0 or direction[0] >= numRow
     or direction[0] < 0): return False
 
 	else: return True
 
+#checks whether the board has been solved
 def is_complete(board):
-    # your code here
     incr = 0
     for line in board:
         for num in line:
             
             if num != incr:
-                #print "False"
                 return False
             else: incr += 1
-    #print "True"
     return True
 
 def main():
     import sys
     board=[[int(n.strip()) for n in line.split(',')] for line in sys.stdin.readlines()]
     print (BFS(board))
-    #print(is_complete(board))
-    #print board
 
 if __name__ == '__main__':
     main()
