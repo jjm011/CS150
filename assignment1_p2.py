@@ -1,8 +1,14 @@
+#Name: Junjie Ma, A10009633
+#      Adam Velasco, A11761033
+#Filename: assignment1_p2
+
 __author__ = 'jjm011@ucsd.edu,a5velasc@ucsd.edu'
 
 import copy
 
+#Board class that represents the each unique board moves 
 class Board(object):
+  #member variables
   def __init__(self, board, row, col, move):
     self.board = board
     self.col = col
@@ -11,23 +17,24 @@ class Board(object):
 
   def __eq__(self, other):
     return self.board == other.board
-
+  #create a hash function for comparing the nodes
   def __hash__(self):
     return hash(str(self.board))
-
+  #getter functions
   def getBoard(self):
     return self.board
   def getCol(self):
-    return self.col;
+    return self.col
   def getRow(self):
-    return self.row;
+    return self.row
   def getMove(self):
-    return self.move;
+    return self.move
 
-#initialize the search by finding the initial zeor tile pisition
+#initialize the search by finding the initial zero tile pisition
 def BFS(board):
     if(is_complete(board)): return "Solved"
-    Q = [] 
+    #using a list as Queue
+    Q = []
     numCol = len(board[0])
     numRow = len(board)
 
@@ -40,9 +47,9 @@ def BFS(board):
         for index2,num in enumerate(line):
 
             if board[index][index2] == 0:
-
+              #create the intial board state and insert into the list
               initial = Board(copy.deepcopy(board), index, index2, copy.deepcopy(solution))
-    Q.append(initial)
+              Q.append(initial)
 
             #visit[index][index2] = False
     #call the search
@@ -57,11 +64,8 @@ def Search(Q, visit):
     #make sure the node is not in visited sit
     if current in visit:
       continue
-		#if visit[current.getRow()][current.getCol()]:
-			#continue #visited before so skip
 
     else:
-      #visit[current.getRow()][current.getCol()] = True
       visit.add(current)
       #create a new state of the board with UP move
       newb = Swap(current, 1)
@@ -92,38 +96,43 @@ def Search(Q, visit):
         return newb.getMove()
       else:
         Q.append(newb)
+
   #All moves are made so unsolvable
   return "UNSOLVABLE"
 
 #computes the swap with according direction
 def Swap(myBoard, direction):
   board = [row[:] for row in myBoard.getBoard()]
-
+  #UP
   if(direction == 1):
     row = myBoard.getRow()-1
     col= myBoard.getCol()
-
+  #DOWN 
   if(direction == 2):
     row = myBoard.getRow()+1
     col = myBoard.getCol()
-
+  #LEFT
   if(direction == 3):
     row = myBoard.getRow()
     col = myBoard.getCol()-1
-		
+  #RIGHT
   if(direction == 4):
 		row = myBoard.getRow()
 		col= myBoard.getCol()+1
       
   newState = (row,col)
   
+  #check if is allowed to move
   if Movable(newState, len(board[0]), len(board)):
+    #make the swap
     temp = board[row][col]
     board[row][col] = myBoard.getBoard()[myBoard.getRow()][myBoard.getCol()]
     board[myBoard.getRow()][myBoard.getCol()] = temp
+    
+    #create each board object according to the direction
     if(direction == 1):
       newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("U"))
-      
+     
     elif(direction == 2):
       newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("D"))
       
@@ -132,7 +141,7 @@ def Swap(myBoard, direction):
       
     elif(direction == 4):
       newb = Board(copy.deepcopy(board), row, col, copy.deepcopy(myBoard.getMove())+("R"))
-      
+     
     return newb
 
   return myBoard
@@ -147,6 +156,7 @@ def Movable(direction,numCol,numRow):
 #checks whether the board has been solved
 def is_complete(board):
     incr = 0
+    #double loop that checks whether each tile is in order
     for line in board:
         for num in line:
             
@@ -154,7 +164,7 @@ def is_complete(board):
                 return False
             else: incr += 1
     return True
-
+#main function that reads in the board from a txt file
 def main():
     import sys
     board=[[int(n.strip()) for n in line.split(',')] for line in sys.stdin.readlines()]
