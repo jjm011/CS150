@@ -40,11 +40,11 @@ class PriorityQueue(object):
 
   #returns the priority node
   def getMax(self):
-    if(self.count >0):
-      return heapq.heappop(self.heap)[-1]
+      (_,_,item) = heapq.heappop(self.heap)
+      return item
   #checks if the queue is empty
   def isempty(self):
-    return self.count == 0
+    return len(self.heap) == 0
 
 #initialize the search by finding the initial zeor tile pisition
 def A(board):
